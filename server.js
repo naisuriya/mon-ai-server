@@ -163,7 +163,7 @@ app.get('/api/history', (req, res) => {
 });
 
 // ------------------------------------------------------------
-// ⭐ SECURE SERVER-SIDE TRANSLATION ENDPOINT
+// ⭐ SECURE SERVER-SIDE TRANSLATION ENDPOINT (WITH CLEANUP FIX)
 // ------------------------------------------------------------
 app.post('/api/translate', async (req, res) => {
   const { sentence, vocabulary, grammarRules } = req.body;
@@ -192,11 +192,23 @@ Return ONLY JSON:
     `;
 
     const result = await model.generateContent(prompt);
-    const text = result.response.text();
+    const raw = result.response.text();
 
-    return res.json(JSON.parse(text));
+    console.log("🔵 Gemini raw:", raw);
+
+    // FIX — Clean out code blocks (```json, ```)
+    const clean = raw
+      .replace(/```json/gi, "")
+      .replace(/```/g, "")
+      .trim();
+
+    console.log("🟢 Gemini clean:", clean);
+
+    const json = JSON.parse(clean);
+    return res.json(json);
+
   } catch (err) {
-    console.error("Translation error:", err);
+    console.error("❌ Translation error:", err);
     res.status(500).json({ error: "Translation failed" });
   }
 });
