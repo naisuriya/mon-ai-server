@@ -21,6 +21,7 @@ app.use(
 app.use(express.json());
 
 // --- SQLite setup ---
+const dbPath = path.join(__dirname, 'mon_ai.db');
 const db = new sqlite3.Database(dbPath);
 
 // Default vocabulary
