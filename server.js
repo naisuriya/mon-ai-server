@@ -163,9 +163,10 @@ app.get('/api/history', (req, res) => {
 });
 
 // Multiple admin passwords allowed
-const ADMIN_PASSWORDS = (process.env.ADMIN_PASSWORDS || "@#NSU_mon,kY3*ChAN,k@ySo*cHAN,Ct_mT2026,MT_Ct2026")
+const ADMIN_PASSWORDS = (process.env.ADMIN_PASSWORDS || "")
   .split(",")
-  .map(p => p.trim());
+  .map(p => p.trim())
+  .filter(p => p.length > 0);
 
 // Admin verify route
 app.post("/api/admin/verify", (req, res) => {
