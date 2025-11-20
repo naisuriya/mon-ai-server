@@ -162,6 +162,22 @@ app.get('/api/history', (req, res) => {
   );
 });
 
+// Multiple admin passwords allowed
+const ADMIN_PASSWORDS = (process.env.ADMIN_PASSWORDS || "@#NSU_mon,kY3*ChAN,k@ySo*cHAN,Ct_mT2026,MT_Ct2026")
+  .split(",")
+  .map(p => p.trim());
+
+// Admin verify route
+app.post("/api/admin/verify", (req, res) => {
+  const { password } = req.body;
+
+  if (ADMIN_PASSWORDS.includes(password)) {
+    return res.json({ ok: true });
+  }
+
+  res.status(401).json({ ok: false, error: "Invalid password" });
+});
+
 // ------------------------------------------------------------
 // ⭐ SECURE SERVER-SIDE TRANSLATION ENDPOINT (WITH CLEANUP FIX)
 // ------------------------------------------------------------
